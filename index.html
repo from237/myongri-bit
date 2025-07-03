@@ -1,120 +1,144 @@
+안녕하세요. 첨부해주신 이미지의 `ReferenceError`는 `handleSubmit` 함수가 실행될 때 `calculateAndShowResult`라는 함수를 찾지 못해 발생하는 문제입니다.
+
+코드의 실행 순서와 관련된 이슈이며, 함수를 호출하기 전에 먼저 정의해주면 간단히 해결할 수 있습니다.
+
+-----
+
+### \#\# 문제 원인
+
+현재 코드에서는 `handleSubmit` 함수가 `calculateAndShowResult` 함수보다 **먼저** 정의되어 있습니다. 사용자가 '결과 분석하기' 버튼을 클릭하면 `handleSubmit` 함수가 실행되는데, 이 시점에서 자바스크립트 엔진이 아직 코드의 뒷부분에 있는 `calculateAndShowResult` 함수를 인식하지 못하여 오류가 발생합니다.
+
+이 문제를 해결하는 가장 확실한 방법은 **함수를 사용하기 전에 먼저 정의**하는 것입니다.
+
+-----
+
+### \#\# 해결 방법
+
+`calculateAndShowResult` 함수의 전체 코드를 `handleSubmit` 함수보다 위로 이동시켜, 함수를 호출하는 부분(`handleSubmit`)보다 정의하는 부분(`calculateAndShowResult`)이 먼저 오도록 순서를 수정합니다.
+
+아래는 문제가 해결된 전체 코드입니다. 코드 내에 `✅` 표시로 수정된 부분을 표기했습니다.
+
+-----
+
+### \#\# 전체 수정 코드
+
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>명리BTI - 나와 우주가 만나는 순간</title>
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    /* 스타일 생략 (이전 코드 유지) */
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>명리BTI - 나와 우주가 만나는 순간</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* 스타일 생략 (이전 코드 유지) */
+  </style>
 </head>
 <body>
-  <div class="container">
-    <div id="main-page" class="page active">
-      <header><h1>명리BTI</h1><p class="subtitle">MBTI와 사주팔자로 알아보는<br>진짜 내 모습 이야기</p></header>
-      <main><div class="main-image"><img src="https://placehold.co/200x200/1a1a2e/e94560?text=✨" alt="명리BTI"></div><div class="intro-text"><p>MBTI 결과만으로 부족했다면,<br>수천 년의 지혜와 만나 보세요!</p></div></main>
-      <footer><button id="start-btn" class="btn">테스트 시작</button></footer>
-    </div>
-    <div id="test-page" class="page"><header><div class="progress-bar"><div id="progress" class="progress"></div></div></header><main><div id="question-container" class="question-card"></div></main><footer></footer></div>
-    <div id="loading-page" class="page"><main><div class="loader"></div><p>당신의 우주를 분석하는 중...</p></main></div>
-    <div id="result-page" class="page"><header><h2 id="result-title"></h2></header><main><section class="result-section"><h3 id="result-synergy-title"></h3><p id="result-synergy-text"></p></section><section class="result-section"><h3 id="result-clash-title"></h3><p id="result-clash-text"></p></section><section class="result-section"><h3 id="result-advice-title"></h3><p id="result-advice-text"></p></section><section class="result-section"><h3 id="result-gunghap-title"></h3><p id="result-gunghap-text"></p></section></main><footer><a href="#" id="restart-btn" class="restart-button">테스트 다시하기</a></footer></div>
-  </div>
+  <div class="container">
+    <div id="main-page" class="page active">
+      <header><h1>명리BTI</h1><p class="subtitle">MBTI와 사주팔자로 알아보는<br>진짜 내 모습 이야기</p></header>
+      <main><div class="main-image"><img src="https://placehold.co/200x200/1a1a2e/e94560?text=✨" alt="명리BTI"></div><div class="intro-text"><p>MBTI 결과만으로 부족했다면,<br>수천 년의 지혜와 만나 보세요!</p></div></main>
+      <footer><button id="start-btn" class="btn">테스트 시작</button></footer>
+    </div>
+    <div id="test-page" class="page"><header><div class="progress-bar"><div id="progress" class="progress"></div></div></header><main><div id="question-container" class="question-card"></div></main><footer></footer></div>
+    <div id="loading-page" class="page"><main><div class="loader"></div><p>당신의 우주를 분석하는 중...</p></main></div>
+    <div id="result-page" class="page"><header><h2 id="result-title"></h2></header><main><section class="result-section"><h3 id="result-synergy-title"></h3><p id="result-synergy-text"></p></section><section class="result-section"><h3 id="result-clash-title"></h3><p id="result-clash-text"></p></section><section class="result-section"><h3 id="result-advice-title"></h3><p id="result-advice-text"></p></section><section class="result-section"><h3 id="result-gunghap-title"></h3><p id="result-gunghap-text"></p></section></main><footer><a href="#" id="restart-btn" class="restart-button">테스트 다시하기</a></footer></div>
+  </div>
 
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      // 요소
-      const pages = document.querySelectorAll('.page');
-      const questionContainer = document.getElementById('question-container');
-      const progressBar = document.getElementById('progress');
-      const startBtn = document.getElementById('start-btn');
-      const restartBtn = document.getElementById('restart-btn');
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      // 요소
+      const pages = document.querySelectorAll('.page');
+      const questionContainer = document.getElementById('question-container');
+      const progressBar = document.getElementById('progress');
+      const startBtn = document.getElementById('start-btn');
+      const restartBtn = document.getElementById('restart-btn');
 
-      // 데이터
-      const questions = [/* MBTI 10문항 배열 */];
-      const birthQuestion = { q:'거의 다 왔어요!', sub_q:'생년월일과 시간을 알려주세요.' };
-      const resultsData = {/* 매핑 데이터 */};
+      // 데이터
+      const questions = [/* MBTI 10문항 배열 */];
+      const birthQuestion = { q:'거의 다 왔어요!', sub_q:'생년월일과 시간을 알려주세요.' };
+      const resultsData = {/* 매핑 데이터 */};
 
-      // 상태
-      let currentQuestionIndex = 0;
-      let userAnswers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
+      // 상태
+      let currentQuestionIndex = 0;
+      let userAnswers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
 
-      // 페이지 전환
-      function showPage(id) {
-        pages.forEach(p => p.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-      }
-      function updateProgressBar() {
-        const total = questions.length + 1;
-        progressBar.style.width = `${(currentQuestionIndex/total)*100}%`;
-      }
+      // 페이지 전환
+      function showPage(id) {
+        pages.forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+      }
+      function updateProgressBar() {
+        const total = questions.length + 1;
+        progressBar.style.width = `${(currentQuestionIndex/total)*100}%`;
+      }
 
-      // 테스트 흐름
-      function displayQuestion() {
-        if (currentQuestionIndex < questions.length) {
-          const q = questions[currentQuestionIndex];
-          questionContainer.innerHTML = `<h3>Q${currentQuestionIndex+1}. ${q.q}</h3>` +
-            q.a.map(ans => `<button class="answer-btn" data-type="${ans.type}">${ans.text}</button>`).join('');
-          document.querySelectorAll('.answer-btn').forEach(btn => btn.addEventListener('click', handleAnswer));
-        } else displayBirthQuestion();
-        updateProgressBar();
-      }
-      function handleAnswer(e) {
-        userAnswers[e.target.dataset.type]++;
-        currentQuestionIndex++;
-        displayQuestion();
-      }
-      function displayBirthQuestion() {
-        questionContainer.innerHTML = `<h3>${birthQuestion.q}</h3><p>${birthQuestion.sub_q}</p>` +
-          `<div class="birth-input"><label>생년월일</label><input type="date" id="birthdate"></div>` +
-          `<div class="birth-input"><label>시간</label><input type="time" id="birthtime"></div>` +
-          `<button id="submit-btn" class="btn">결과 분석하기</button>`;
-        document.getElementById('submit-btn').addEventListener('click', handleSubmit);
-      }
-      function handleSubmit() {
-        const bd = document.getElementById('birthdate').value;
-        const bt = document.getElementById('birthtime').value;
-        if (!bd || !bt) { alert('생년월일과 시간을 입력해주세요!'); return; }
-        showPage('loading-page');
-        // 함수 호출 전 정의 확인
-        if (typeof calculateAndShowResult === 'function') {
-          calculateAndShowResult(bd, bt);
-        } else {
-          alert('결과 계산 함수가 정의되지 않았습니다.');
-        }
-      }
-      function resetTest() {
-        currentQuestionIndex = 0;
-        userAnswers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
-        updateProgressBar();
-        showPage('main-page');
-      }
+      // 테스트 흐름
+      function displayQuestion() {
+        if (currentQuestionIndex < questions.length) {
+          const q = questions[currentQuestionIndex];
+          questionContainer.innerHTML = `<h3>Q${currentQuestionIndex+1}. ${q.q}</h3>` +
+            q.a.map(ans => `<button class="answer-btn" data-type="${ans.type}">${ans.text}</button>`).join('');
+          document.querySelectorAll('.answer-btn').forEach(btn => btn.addEventListener('click', handleAnswer));
+        } else displayBirthQuestion();
+        updateProgressBar();
+      }
+      function handleAnswer(e) {
+        userAnswers[e.target.dataset.type]++;
+        currentQuestionIndex++;
+        displayQuestion();
+      }
+      function displayBirthQuestion() {
+        questionContainer.innerHTML = `<h3>${birthQuestion.q}</h3><p>${birthQuestion.sub_q}</p>` +
+          `<div class="birth-input"><label>생년월일</label><input type="date" id="birthdate"></div>` +
+          `<div class="birth-input"><label>시간</label><input type="time" id="birthtime"></div>` +
+          `<button id="submit-btn" class="btn">결과 분석하기</button>`;
+        document.getElementById('submit-btn').addEventListener('click', handleSubmit);
+      }
 
-      // 이벤트 연결
-      startBtn.addEventListener('click', () => {
-        showPage('test-page');
-        displayQuestion();
-      });
-      restartBtn.addEventListener('click', e => {
-        e.preventDefault();
-        resetTest();
-      });
+      // ✅ 해결 방법 1: 결과를 계산하는 함수를 먼저 정의합니다.
+      function calculateAndShowResult(birthdate, birthtime) {
+        // MBTI 및 사주 분석 로직 구현
+        // 예시로 바로 결과 페이지 표시
+        showPage('result-page');
+        document.getElementById('result-title').innerText = '분석 완료';
+        document.getElementById('result-synergy-text').innerText = '여기에 시너지 텍스트가 들어갑니다.';
+        document.getElementById('result-clash-text').innerText = '여기에 클래시 텍스트가 들어갑니다.';
+        document.getElementById('result-advice-text').innerText = '여기에 조언 텍스트가 들어갑니다.';
+        document.getElementById('result-gunghap-text').innerText = '여기에 궁합 텍스트가 들어갑니다.';
+      }
 
-      // 실제 결과 계산 함수 정의
-      function calculateAndShowResult(birthdate, birthtime) {
-        // MBTI 및 사주 분석 로직 구현
-        // 예시로 바로 결과 페이지 표시
-        showPage('result-page');
-        document.getElementById('result-title').innerText = '분석 완료';
-        document.getElementById('result-synergy-text').innerText = '여기에 시너지 텍스트가 들어갑니다.';
-        document.getElementById('result-clash-text').innerText = '여기에 클래시 텍스트가 들어갑니다.';
-        document.getElementById('result-advice-text').innerText = '여기에 조언 텍스트가 들어갑니다.';
-        document.getElementById('result-gunghap-text').innerText = '여기에 궁합 텍스트가 들어갑니다.';
-      }
-    });
-  </script>
+      function handleSubmit() {
+        const bd = document.getElementById('birthdate').value;
+        const bt = document.getElementById('birthtime').value;
+        if (!bd || !bt) { alert('생년월일과 시간을 입력해주세요!'); return; }
+        showPage('loading-page');
+        
+        // ✅ 해결 방법 2: 이제 함수가 위에 정의되었으므로 에러 없이 직접 호출합니다.
+        calculateAndShowResult(bd, bt);
+      }
+
+      function resetTest() {
+        currentQuestionIndex = 0;
+        userAnswers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 };
+        updateProgressBar();
+        showPage('main-page');
+      }
+
+      // 이벤트 연결
+      startBtn.addEventListener('click', () => {
+        showPage('test-page');
+        displayQuestion();
+      });
+      restartBtn.addEventListener('click', e => {
+        e.preventDefault();
+        resetTest();
+      });
+    });
+  </script>
 </body>
 </html>
+```

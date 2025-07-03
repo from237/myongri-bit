@@ -1,22 +1,8 @@
-안녕하세요. 첨부해주신 이미지의 `ReferenceError`는 `handleSubmit` 함수가 실행될 때 `calculateAndShowResult`라는 함수를 찾지 못해 발생하는 문제입니다.
+안녕하세요. 자바스크립트 오류를 수정하시면서 CSS 스타일이 누락되어 디자인이 초기화된 것 같습니다.
 
-코드의 실행 순서와 관련된 이슈이며, 함수를 호출하기 전에 먼저 정의해주면 간단히 해결할 수 있습니다.
+이전 코드에 `/* 스타일 생략 */`이라는 주석만 있었기 때문에, 자바스크립트 코드를 수정하면서 디자인을 담당하는 CSS 코드가 포함되지 않았습니다.
 
------
-
-### \#\# 문제 원인
-
-현재 코드에서는 `handleSubmit` 함수가 `calculateAndShowResult` 함수보다 **먼저** 정의되어 있습니다. 사용자가 '결과 분석하기' 버튼을 클릭하면 `handleSubmit` 함수가 실행되는데, 이 시점에서 자바스크립트 엔진이 아직 코드의 뒷부분에 있는 `calculateAndShowResult` 함수를 인식하지 못하여 오류가 발생합니다.
-
-이 문제를 해결하는 가장 확실한 방법은 **함수를 사용하기 전에 먼저 정의**하는 것입니다.
-
------
-
-### \#\# 해결 방법
-
-`calculateAndShowResult` 함수의 전체 코드를 `handleSubmit` 함수보다 위로 이동시켜, 함수를 호출하는 부분(`handleSubmit`)보다 정의하는 부분(`calculateAndShowResult`)이 먼저 오도록 순서를 수정합니다.
-
-아래는 문제가 해결된 전체 코드입니다. 코드 내에 `✅` 표시로 수정된 부분을 표기했습니다.
+아래에 **디자인(CSS)과 기능(JavaScript)이 모두 포함된 전체 코드**를 다시 작성해 드렸습니다. 이 코드로 전체를 교체하시면 디자인과 기능이 모두 정상적으로 작동할 것입니다.
 
 -----
 
@@ -32,8 +18,132 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet" />
-  <style>
-    /* 스타일 생략 (이전 코드 유지) */
+  
+  
+    <style>
+    /* 기본 설정 및 배경 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #1a1a2e;
+      color: #f0f0f0;
+      font-family: 'Noto Sans KR', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    
+    /* 레이아웃 */
+    .container {
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+    .page {
+      display: none; /* 평소에는 페이지 숨김 */
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .page.active {
+      display: flex; /* active 클래스가 붙으면 보임 */
+    }
+
+    /* 메인 페이지 */
+    #main-page header, #main-page main, #main-page footer {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    /* 텍스트 스타일 */
+    h1 { font-size: 2.5rem; color: #e94560; margin-bottom: 10px; }
+    h2 { font-size: 2rem; color: #e94560; margin-bottom: 20px; }
+    h3 { font-size: 1.2rem; margin-bottom: 20px; }
+    p { line-height: 1.6; }
+    .subtitle { font-size: 1.1rem; color: #c0c0c0; margin-bottom: 30px; }
+    .intro-text { margin: 30px 0; }
+
+    /* 버튼 스타일 */
+    .btn, .answer-btn, .restart-button {
+      background-color: #e94560;
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 15px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn:hover, .answer-btn:hover, .restart-button:hover { background-color: #d43d51; }
+
+    /* 테스트 페이지 */
+    .progress-bar {
+      width: 100%;
+      background-color: #333;
+      border-radius: 5px;
+      height: 10px;
+      margin-bottom: 40px;
+    }
+    .progress {
+      width: 0%;
+      height: 100%;
+      background-color: #e94560;
+      border-radius: 5px;
+      transition: width 0.5s;
+    }
+    .question-card { width: 100%; }
+    .answer-btn { background-color: #2a2a3e; margin-bottom: 10px; }
+    .answer-btn:hover { background-color: #3f3f5a; }
+
+    /* 생년월일 입력 */
+    .birth-input { margin: 15px 0; width: 100%; text-align: left;}
+    .birth-input label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: #c0c0c0; }
+    .birth-input input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 5px;
+      border: 1px solid #444;
+      background-color: #2a2a3e;
+      color: #f0f0f0;
+      font-size: 1rem;
+    }
+    /* input type time/date 아이콘 색상 (웹킷 브라우저) */
+    input[type="date"]::-webkit-calendar-picker-indicator,
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+    }
+
+    /* 로딩 페이지 */
+    .loader {
+      border: 8px solid #333;
+      border-top: 8px solid #e94560;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      animation: spin 1.5s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* 결과 페이지 */
+    .result-section {
+      background-color: #2a2a3e;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      width: 100%;
+      text-align: left;
+    }
+    .result-section h3 { color: #e94560; border-bottom: 1px solid #444; padding-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -99,15 +209,18 @@
         document.getElementById('submit-btn').addEventListener('click', handleSubmit);
       }
 
-      // ✅ 해결 방법 1: 결과를 계산하는 함수를 먼저 정의합니다.
       function calculateAndShowResult(birthdate, birthtime) {
         // MBTI 및 사주 분석 로직 구현
         // 예시로 바로 결과 페이지 표시
         showPage('result-page');
         document.getElementById('result-title').innerText = '분석 완료';
+        document.getElementById('result-synergy-title').innerText = '🌟 당신의 시너지';
         document.getElementById('result-synergy-text').innerText = '여기에 시너지 텍스트가 들어갑니다.';
+        document.getElementById('result-clash-title').innerText = '💥 주의할 점';
         document.getElementById('result-clash-text').innerText = '여기에 클래시 텍스트가 들어갑니다.';
+        document.getElementById('result-advice-title').innerText = '💡 조언';
         document.getElementById('result-advice-text').innerText = '여기에 조언 텍스트가 들어갑니다.';
+        document.getElementById('result-gunghap-title').innerText = '💖 최고의 궁합';
         document.getElementById('result-gunghap-text').innerText = '여기에 궁합 텍스트가 들어갑니다.';
       }
 
@@ -115,10 +228,13 @@
         const bd = document.getElementById('birthdate').value;
         const bt = document.getElementById('birthtime').value;
         if (!bd || !bt) { alert('생년월일과 시간을 입력해주세요!'); return; }
-        showPage('loading-page');
         
-        // ✅ 해결 방법 2: 이제 함수가 위에 정의되었으므로 에러 없이 직접 호출합니다.
-        calculateAndShowResult(bd, bt);
+        showPage('loading-page');
+        
+        // 로딩 화면을 보여주기 위해 setTimeout 사용 (2초 후 결과 표시)
+        setTimeout(() => {
+            calculateAndShowResult(bd, bt);
+        }, 2000);
       }
 
       function resetTest() {

@@ -152,4 +152,115 @@
                     <p id="result-advice-text"></p>
                 </section>
                 <section class="result-section">
-                    <h3 id="result-g
+                    <h3 id="result-gunghap-title"></h3>
+                    <p id="result-gunghap-text"></p>
+                </section>
+            </main>
+            <footer>
+                <a href="#" id="restart-btn" class="restart-button">테스트 다시하기</a>
+            </footer>
+        </div>
+    </div>
+    <script>
+        // 사주(간지) 계산 함수
+        function calculateGanzhi(birthdate, birthtime) {
+            const [y, m, d] = birthdate.split('-').map(Number);
+            const [h] = birthtime.split(':').map(Number);
+            const heavenlyStems = ['갑','을','병','정','무','기','경','신','임','계'];
+            const earthlyBranches = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
+            const yearIndex = (y - 4) % 60;
+            const yearGanzhi = heavenlyStems[yearIndex % 10] + earthlyBranches[yearIndex % 12];
+            const monthIndex = (yearIndex % 5) * 12 + (m + 1);
+            const monthGanzhi = heavenlyStems[monthIndex % 10] + earthlyBranches[monthIndex % 12];
+            const dayIndex = (new Date(birthdate).getTime() / (1000*60*60*24) + 47) % 60;
+            const dayGanzhi = heavenlyStems[Math.floor(dayIndex)%10] + earthlyBranches[Math.floor(dayIndex)%12];
+            const hourBranch = earthlyBranches[ Math.floor(((h + 1) % 24) / 2) ];
+            const hourStemIndex = (Math.floor(dayIndex) * 12 + Math.floor(((h + 1) % 24) / 2)) % 10;
+            const hourGanzhi = heavenlyStems[hourStemIndex] + hourBranch;
+            return { yearGanzhi, monthGanzhi, dayGanzhi, hourGanzhi };
+        }
+        // 데이터 영역
+        const questions = [
+            { q: "드디어 주말! 내 상태는?", a: [{ text: "이번 주 핫플 어디? 당장 약속 잡아야지!", type: "E" }, { text: "아무도 날 찾지 마… 침대랑 합체해야 해.", type: "I" }] },
+            { q: "낯선 파티에 갔을 때 나는?", a: [{ text: "오히려 좋아! 새로운 사람들과 에너지 풀충전!", type: "E" }, { text: "아는 얼굴 어디 없나... 조용히 구석에서 폰만 본다.", type: "I" }] },
+            { q: "맛집 얘기를 할 때 나는?", a: [{ text: "거기 평점 4.5점, 시그니처 메뉴는 OOO!", type: "S" }, { text: "뭔가 아늑하고 감성적인 분위기? 가보고 싶어!", type: "N" }] },
+            { q: "새 프로젝트를 시작할 때?", a: [{ text: "일단 할 일 리스트업부터! 구체적인 계획이 먼저!", type: "S" }, { text: "이걸로 뭘 할 수 있을까? 전체적인 큰 그림부터!", type: "N" }] },
+            { q: "친구가 헤어졌다고 울 때 나의 첫 마디는?", a: [{ text: "왜? 무슨 일이었는데? 객관적 상황 파악부터.", type: "T" }, { text: "아이고, 어떡해... 너무 힘들겠다. 일단 괜찮아?", type: "F" }] },
+            { q: "내가 더 듣고 싶은 칭찬은?", a: [{ text: "일 진짜 똑 부러지게 잘한다! 완전 스마트해!", type: "T" }, { text: "너랑 있으면 마음이 편안해져. 정말 따뜻한 사람이야.", type: "F" }] },
+            { q: "해외여행을 간다면 나의 스타일은?", a: [{ text: "분 단위로 짜인 엑셀 시트! 완벽한 계획!", type: "J" }, { text: "항공권과 숙소만 예약하고, 나머진 발길 닿는 대로~", type: "P" }] },
+            { q: "오늘 할 일을 내일로 미룰 수 있다면?", a: [{ text: "찝찝해서 안돼. 오늘 일은 오늘 끝내야지.", type: "J" }, { text: "내일의 내가 알아서 하겠지! 일단 좀 쉬자.", type: "P" }] }
+        ];
+        const birthQuestion = { q: "거의 다 왔어요!", sub_q: "더 깊은 분석을 위해 생년월일과 시간을 알려주세요." };
+        const resultsData = {
+            'ISTJ_정화': { title: '현실주의 횃불, ISTJ x 정화', synergy: { title: '🔥 시너지: 완벽주의 해결사', text: '...' }, clash: { title: '💧 클래시: 내 안의 불과 물', text: '...' }, advice: { title: '💡 조언: 유연성 기르기', text: '...' }, gunghap: { title: '💖 궁합: ENFP, 壬水', text: '...' } },
+            'ENFP_갑목': { title: '자유로운 거목, ENFP x 갑목', synergy: { title: '🚀 시너지: 창의력 발전소', text: '...' }, clash: { title: '🌪️ 클래시: 용두사미 텐션', text: '...' }, advice: { title: '✂️ 조언: 가지치기', text: '...' }, gunghap: { title: '💖 궁합: INTJ, 戊土', text: '...' } },
+            'INTJ_경금': { title: '냉철 전략가, INTJ x 경금', synergy: { title: '💎 시너지: 분석력', text: '...' }, clash: { title: '🧊 클래시: 얼음 같은 완벽주의', text: '...' }, advice: { title: '☀️ 조언: 따뜻함', text: '...' }, gunghap: { title: '💖 궁합: ENFP, 丁火', text: '...' } },
+            'ISFJ_기토': { title: '헌신 정원사, ISFJ x 기토', synergy: { title: '🌱 시너지: 안정감', text: '...' }, clash: { title: '🧱 클래시: 거절 못하는 흙벽', text: '...' }, advice: { title: '🌳 조언: 내 나무 심기', text: '...' }, gunghap: { title: '💖 궁합: ESTP, 甲木', text: '...' } },
+            'ISTP_임수': { title: '바다 탐험가, ISTP x 임수', synergy: { title: '🌊 시너지: 적응력', text: '...' }, clash: { title: '❓ 클래시: 알 수 없는 심해', text: '...' }, advice: { title: '🧭 조언: 나만의 등대', text: '...' }, gunghap: { title: '💖 궁합: ESTP, 丙火/丁火', text: '...' } },
+            'INFJ_을목': { title: '인동초, INFJ x 을목', synergy: { title: '덩굴 포인트: 공감력', text: '...' }, clash: { title: '💔 상처 포인트: 여린 줄기', text: '...' }, advice: { title: '☀️ 조언: 태양 향하기', text: '...' }, gunghap: { title: '💖 궁합: ENTP, 丙火', text: '...' } }
+        };
+        let currentQuestionIndex = 0; let userAnswers = { E:0, I:0, S:0, N:0, T:0, F:0, J:0, P:0 };
+        const pages = document.querySelectorAll('.page'); const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn'); const questionContainer = document.getElementById('question-container');
+        const progressBar = document.getElementById('progress');
+        function showPage(id) { pages.forEach(p => p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        function displayQuestion() { if (currentQuestionIndex < questions.length) { const q = questions[currentQuestionIndex]; questionContainer.innerHTML = `<h3>Q${currentQuestionIndex+1}. ${q.q}</h3>` + q.a.map(ans => `<button class="answer-btn" data-type="${ans.type}">${ans.text}</button>`).join(''); document.querySelectorAll('.answer-btn').forEach(btn => btn.addEventListener('click', handleAnswer)); } else displayBirthQuestion(); updateProgressBar(); }
+        function displayBirthQuestion() { questionContainer.innerHTML = `<h3>${birthQuestion.q}</h3><p>${birthQuestion.sub_q}</p>` + `<div class="birth-input"><label>생년월일</label><input type="date" id="birthdate"></div>` + `<div class="birth-input"><label>태어난 시간</label><input type="time" id="birthtime"></div>` + `<button id="submit-btn" class="btn">결과 분석하기</button>`; document.getElementById('submit-btn').addEventListener('click', handleSubmit); updateProgressBar(); }
+        function handleAnswer(e) { userAnswers[e.target.dataset.type]++; currentQuestionIndex++; displayQuestion(); }
+        function updateProgressBar() { const total = questions.length + 1; progressBar.style.width = `${(currentQuestionIndex/total)*100}%`; }
+        function handleSubmit() { const birthdate = document.getElementById('birthdate').value; const birthtime = document.getElementById('birthtime').value; if (!birthdate || !birthtime) { alert('생년월일과 시간을 입력해주세요!'); return; } showPage('loading-page'); calculateAndShowResult(birthdate, birthtime); }
+        function calculateAndShowResult(birthdate, birthtime) {
+            // 로그 추가
+            console.log('▶ calculateAndShowResult 호출');
+            // MBTI 계산
+            let mbti = '';
+            mbti += userAnswers.E > userAnswers.I ? 'E' : 'I';
+            mbti += userAnswers.S > userAnswers.N ? 'S' : 'N';
+            mbti += userAnswers.T > userAnswers.F ? 'T' : 'F';
+            mbti += userAnswers.J > userAnswers.P ? 'J' : 'P';
+            
+            // 사주 타입 설정
+            let sajuType = '정화';
+            switch(mbti) {
+                case 'ISTJ': sajuType = '정화'; break;
+                case 'ENFP': sajuType = '갑목'; break;
+                case 'INTJ': sajuType = '경금'; break;
+                case 'ISFJ': sajuType = '기토'; break;
+                case 'ISTP': sajuType = '임수'; break;
+                case 'INFJ': sajuType = '을목'; break;
+                default: sajuType = '정화';
+            }
+            const resultKey = `${mbti}_${sajuType}`;
+            console.log('▶ resultKey =', resultKey);
+            console.log('▶ available keys =', Object.keys(resultsData));
+            
+            // 사주(간지) 계산
+            const { yearGanzhi, monthGanzhi, dayGanzhi, hourGanzhi } = calculateGanzhi(birthdate, birthtime);
+            const sajuInfo = `생년간지: ${yearGanzhi}\n월간지: ${monthGanzhi}\n일간지: ${dayGanzhi}\n시간간지: ${hourGanzhi}`;
+
+            // 결과 데이터 조회 및 폴백
+            let data = resultsData[resultKey];
+            if (!data) {
+                console.warn(`결과 매핑 없음: ${resultKey}`);
+                data = resultsData['ISTJ_정화'];
+            }
+
+            // 결과 바인딩
+            document.getElementById('result-title').innerText = data.title;
+            document.getElementById('result-synergy-title').innerText = data.synergy.title;
+            document.getElementById('result-synergy-text').innerText = data.synergy.text;
+            document.getElementById('result-clash-title').innerText = data.clash.title;
+            document.getElementById('result-clash-text').innerText = sajuInfo + '\n\n' + data.clash.text;
+            document.getElementById('result-advice-title').innerText = data.advice.title;
+            document.getElementById('result-advice-text').innerText = data.advice.text;
+            document.getElementById('result-gunghap-title').innerText = data.gunghap.title;
+            document.getElementById('result-gunghap-text').innerText = data.gunghap.text;
+
+            showPage('result-page');
+        }
+        function resetTest() { currentQuestionIndex = 0; userAnswers = { E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0 }; progressBar.style.width = '0%'; showPage('main-page'); }
+        startBtn.addEventListener('click', () => { showPage('test-page'); displayQuestion(); });
+        restartBtn.addEventListener('click', e => { e.preventDefault(); resetTest(); });
+    </script>
+</body>
+</html>
